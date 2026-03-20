@@ -1,29 +1,4 @@
-// const forms= document.querySelector('#movies');
-// const results= document.querySelector("#results");
-// const vals= document.querySelector("#good")
-// forms.addEventListener("submit", async function(e){
-//     e.preventDefault();
-//   results.innerHTML="";
-//     const res= vals.value;
-//     const gett= await axios.get(`https://api.tvmaze.com/search/shows?q=${res}`);
-//     for (result of gett.data){
-        
-//         const dd= result.show.image?.medium;
-// if(dd){
-//     const imgs= document.createElement("img");
-//     imgs.src=dd;
-//     results.append(imgs);
-//     vals.value="";
-// }
-//     }
-//     const title = document.createElement("p")
-// title.innerText = result.show.name
 
-// const card = document.createElement("div")
-// card.append(img, title)
-
-// results.append(card)
-// })
 
 
 const form = document.querySelector('#movies');
@@ -52,8 +27,6 @@ form.addEventListener('submit', async function (e) {
             return;
         }
         
-
-        // Loop through results
         for (let result of data) {
             const show = result.show;
 
