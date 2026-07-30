@@ -1,15 +1,22 @@
 const form = document.querySelector('#movies');
 const input = document.querySelector('#good');
 const results = document.querySelector('#results');
+const loader = document.querySelector('#loader');
 
-const modal = document.querySelector('#modal');
-const closeModal = document.querySelector('#closeModal');
-const modalImg = document.querySelector('#modalImg');
-const modalTitle = document.querySelector('#modalTitle');
-const modalRating = document.querySelector('#modalRating');
-const modalGenres = document.querySelector('#modalGenres');
-const modalSummary = document.querySelector('#modalSummary');
-const trailerBtn = document.querySelector('#trailerBtn');
+// Helper function to show Skeleton Placeholders
+function showSkeletons(count = 6) {
+    results.innerHTML = "";
+    for (let i = 0; i < count; i++) {
+        const skeletonCard = document.createElement("div");
+        skeletonCard.classList.add("card", "skeleton");
+        skeletonCard.innerHTML = `
+            <div class="skeleton-img"></div>
+            <div class="skeleton-text"></div>
+            <div class="skeleton-text short"></div>
+        `;
+        results.append(skeletonCard);
+    }
+}
 
 form.addEventListener('submit', async function (e) {
     e.preventDefault();
@@ -21,9 +28,15 @@ form.addEventListener('submit', async function (e) {
         return;
     }
 
+    // 1. Show Spinner and Skeleton Loaders immediately
+    if (loader) loader.classList.remove('hidden');
+    showSkeletons(8);
+
     try {
         const response = await axios.get(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`);
         const data = response.data;
+        
+        // Clear skeleton placeholders
         results.innerHTML = "";
 
         if (data.length === 0) {
@@ -31,6 +44,7 @@ form.addEventListener('submit', async function (e) {
             return;
         }
 
+        // 2. Render actual show cards
         for (let result of data) {
             const show = result.show;
             const imgUrl = show.image?.medium || "https://via.placeholder.com/210x295?text=No+Image";
@@ -51,7 +65,7 @@ form.addEventListener('submit', async function (e) {
             card.append(img, title, rating);
             results.append(card);
 
-            // Open Modal using existing 'show' data (no secondary API call needed)
+            // Modal Trigger
             card.addEventListener("click", () => {
                 modalImg.src = show.image?.original || show.image?.medium || imgUrl;
                 modalTitle.innerText = show.name;
@@ -59,12 +73,10 @@ form.addEventListener('submit', async function (e) {
                 modalGenres.innerText = `Genres: ${show.genres?.length ? show.genres.join(", ") : "N/A"}`;
                 modalSummary.innerHTML = show.summary || "No summary available.";
 
-                // Set YouTube search URL
                 const trailerUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(show.name + " trailer")}`;
-                
                 if (trailerBtn.tagName === 'A') {
                     trailerBtn.href = trailerUrl;
-                    trailerBtn.target = "_blank"; // Open trailer in a new tab
+                    trailerBtn.target = "_blank";
                 } else {
                     trailerBtn.onclick = () => window.open(trailerUrl, "_blank");
                 }
@@ -83,18 +95,10 @@ form.addEventListener('submit', async function (e) {
     } catch (err) {
         console.error(err);
         results.innerHTML = "<p>Something went wrong. Try again later.</p>";
+    } finally {
+        // 3. Always hide spinner after request completes (success or fail)
+        if (loader) loader.classList.add('hidden');
     }
 
     input.value = "";
-});
-
-// Close modal handlers
-closeModal.addEventListener("click", () => {
-    modal.classList.add("hidden");
-});
-
-modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-        modal.classList.add("hidden");
-    }
 });
