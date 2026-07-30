@@ -51,24 +51,25 @@ form.addEventListener('submit', async function (e) {
             card.append(img, title, rating);
             results.append(card);
 
-            card.addEventListener("click", async () => {
-                try {
-                    const detailsResponse = await axios.get(`https://api.tvmaze.com/shows/${show.id}`);
-                    const details = detailsResponse.data;
+            // Open Modal using existing 'show' data (no secondary API call needed)
+            card.addEventListener("click", () => {
+                modalImg.src = show.image?.original || show.image?.medium || imgUrl;
+                modalTitle.innerText = show.name;
+                modalRating.innerText = `Rating: ${show.rating?.average ?? "N/A"}`;
+                modalGenres.innerText = `Genres: ${show.genres?.length ? show.genres.join(", ") : "N/A"}`;
+                modalSummary.innerHTML = show.summary || "No summary available.";
 
-                    modalImg.src = details.image?.original || details.image?.medium || imgUrl;
-                    modalTitle.innerText = details.name;
-                    modalRating.innerText = `Rating: ${details.rating?.average ?? "N/A"}`;
-                    modalGenres.innerText = `Genres: ${details.genres?.join(", ") || "N/A"}`;
-                    modalSummary.innerHTML = details.summary || "No summary available.";
-
-                    trailerBtn.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(details.name + " trailer")}`;
-
-                    modal.classList.remove("hidden");
-                } catch (err) {
-                    console.error(err);
-                    alert("Could not load show details.");
+                // Set YouTube search URL
+                const trailerUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(show.name + " trailer")}`;
+                
+                if (trailerBtn.tagName === 'A') {
+                    trailerBtn.href = trailerUrl;
+                    trailerBtn.target = "_blank"; // Open trailer in a new tab
+                } else {
+                    trailerBtn.onclick = () => window.open(trailerUrl, "_blank");
                 }
+
+                modal.classList.remove("hidden");
             });
         }
 
@@ -87,6 +88,7 @@ form.addEventListener('submit', async function (e) {
     input.value = "";
 });
 
+// Close modal handlers
 closeModal.addEventListener("click", () => {
     modal.classList.add("hidden");
 });
