@@ -1,7 +1,7 @@
 
-const form = document.querySelector('#movies');
-const input = document.querySelector('#good');
-const results = document.querySelector('#results');
+const form = document.querySelector('#movies');             //form
+const input = document.querySelector('#good');              //input
+const results = document.querySelector('#results');         //div
 
 form.addEventListener('submit', async function (e) {
     e.preventDefault();
