@@ -1,10 +1,20 @@
+// --- Element Selectors ---
 const form = document.querySelector('#movies');
 const input = document.querySelector('#good');
 const results = document.querySelector('#results');
 const loader = document.querySelector('#loader');
 
-// Helper function to show Skeleton Placeholders
-function showSkeletons(count = 6) {
+const modal = document.querySelector('#modal');
+const closeModal = document.querySelector('#closeModal');
+const modalImg = document.querySelector('#modalImg');
+const modalTitle = document.querySelector('#modalTitle');
+const modalRating = document.querySelector('#modalRating');
+const modalGenres = document.querySelector('#modalGenres');
+const modalSummary = document.querySelector('#modalSummary');
+const trailerBtn = document.querySelector('#trailerBtn');
+
+// --- Helper: Render Skeleton Loading Cards ---
+function showSkeletons(count = 8) {
     results.innerHTML = "";
     for (let i = 0; i < count; i++) {
         const skeletonCard = document.createElement("div");
@@ -18,6 +28,7 @@ function showSkeletons(count = 6) {
     }
 }
 
+// --- Search Form Submit Listener ---
 form.addEventListener('submit', async function (e) {
     e.preventDefault();
 
@@ -28,15 +39,15 @@ form.addEventListener('submit', async function (e) {
         return;
     }
 
-    // 1. Show Spinner and Skeleton Loaders immediately
+    // 1. Show spinner & skeleton card placeholders
     if (loader) loader.classList.remove('hidden');
     showSkeletons(8);
 
     try {
         const response = await axios.get(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`);
         const data = response.data;
-        
-        // Clear skeleton placeholders
+
+        // Clear skeletons
         results.innerHTML = "";
 
         if (data.length === 0) {
@@ -44,7 +55,7 @@ form.addEventListener('submit', async function (e) {
             return;
         }
 
-        // 2. Render actual show cards
+        // 2. Build and display show cards
         for (let result of data) {
             const show = result.show;
             const imgUrl = show.image?.medium || "https://via.placeholder.com/210x295?text=No+Image";
@@ -65,7 +76,7 @@ form.addEventListener('submit', async function (e) {
             card.append(img, title, rating);
             results.append(card);
 
-            // Modal Trigger
+            // Open modal on card click (uses pre-fetched search data)
             card.addEventListener("click", () => {
                 modalImg.src = show.image?.original || show.image?.medium || imgUrl;
                 modalTitle.innerText = show.name;
@@ -74,17 +85,21 @@ form.addEventListener('submit', async function (e) {
                 modalSummary.innerHTML = show.summary || "No summary available.";
 
                 const trailerUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(show.name + " trailer")}`;
-                if (trailerBtn.tagName === 'A') {
-                    trailerBtn.href = trailerUrl;
-                    trailerBtn.target = "_blank";
-                } else {
-                    trailerBtn.onclick = () => window.open(trailerUrl, "_blank");
+
+                if (trailerBtn) {
+                    if (trailerBtn.tagName === 'A') {
+                        trailerBtn.href = trailerUrl;
+                        trailerBtn.target = "_blank";
+                    } else {
+                        trailerBtn.onclick = () => window.open(trailerUrl, "_blank");
+                    }
                 }
 
                 modal.classList.remove("hidden");
             });
         }
 
+        // Fun Easter Egg
         if (query.toLowerCase() === "dark") {
             const msgg = document.createElement("p");
             msgg.classList.add("msg");
@@ -96,9 +111,35 @@ form.addEventListener('submit', async function (e) {
         console.error(err);
         results.innerHTML = "<p>Something went wrong. Try again later.</p>";
     } finally {
-        // 3. Always hide spinner after request completes (success or fail)
+        // 3. Hide loading spinner
         if (loader) loader.classList.add('hidden');
     }
 
     input.value = "";
+});
+
+// --- Modal Close Handlers ---
+
+// 1. Close button click
+if (closeModal) {
+    closeModal.addEventListener("click", (e) => {
+        e.stopPropagation(); // Prevents event bubbling issues
+        modal.classList.add("hidden");
+    });
+}
+
+// 2. Click outside modal content (backdrop)
+if (modal) {
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            modal.classList.add("hidden");
+        }
+    });
+}
+
+// 3. Keyboard Escape key press
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal && !modal.classList.contains("hidden")) {
+        modal.classList.add("hidden");
+    }
 });
