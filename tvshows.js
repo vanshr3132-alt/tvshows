@@ -9,7 +9,8 @@ form.addEventListener('submit', async function (e) {
     const query = input.value.trim();
 
     if (!query) {
-        alert("Please enter something")
+        alert("Please enter something");
+        return;
     }
 
     
