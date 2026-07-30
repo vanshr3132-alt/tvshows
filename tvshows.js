@@ -15,7 +15,9 @@ form.addEventListener('submit', async function (e) {
     
     
     try {
-        const response = await axios.get(`https://api.tvmaze.com/search/shows?q=${query}`);
+       const response = await axios.get(
+  `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`
+);
         const data = response.data;
         results.innerHTML = "";
 
