@@ -1,6 +1,4 @@
 
-
-
 const form = document.querySelector('#movies');
 const input = document.querySelector('#good');
 const results = document.querySelector('#results');
