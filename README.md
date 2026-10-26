@@ -44,7 +44,7 @@ https://github.com/vanshr3132-alt/tvshows/blob/main/tvshowscreenshot.png
 ## 📂 Project Structure
 
 ```
-project/
+tvshows
 │
 ├── index.html
 ├── style.css
@@ -53,11 +53,13 @@ project/
 ```
 🌐 API Used
 
-TVMaze API  https://api.tvmaze.com/search/shows?q=your_query
+## TVMaze API  https://api.tvmaze.com/search/shows?q=your_query
 
 🙌 Acknowledgements
 
-TVMaze for providing the free API
+## TVMaze for providing the free API
 
-Inspired by beginner JavaScript projects 
+## Inspired by beginner JavaScript projects 
+
+## AI assistance for styling 
 
