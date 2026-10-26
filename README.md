@@ -12,6 +12,7 @@ A simple and interactive web app that allows users to search for TV shows and di
 * ⏳ Loading indicator while fetching data
 * ❌ Handles empty and no-result searches
 * 🎨 Clean grid layout UI
+* AI assistance for styling
 
 ---
 
