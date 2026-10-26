@@ -47,7 +47,7 @@ https://github.com/vanshr3132-alt/tvshows/blob/main/tvshowscreenshot.png
 tvshows
 │
 ├── index.html
-├── style.css
+├── tvshowss.css
 ├── tvshows.js
 └── README.md
 ```
