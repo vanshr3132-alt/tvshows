@@ -46,7 +46,7 @@ project/
 ├── index.html
 ├── style.css
 ├── tvshows.js
-└── REA
+└── README.md
 ```
 🌐 API Used
 
