@@ -30,7 +30,7 @@ Live Demo
 
 https://vanshr3132-alt.github.io/tvshows/
 
-![Project screenshot](tvshowscreenshot.png)
+![Tvshows-demo](tvshows.gif)
 
 ## ⚙️ How It Works
 
